@@ -1,0 +1,21 @@
+# Carpetas generadas por Visual Studio
+.vs/
+
+# Archivos compilados
+bin/
+obj/
+
+# Archivos de usuario de Visual Studio
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Logs
+*.log
+
+# Archivos temporales
+*.tmp
+
+# Configuración local sensible, si luego usamos secretos
+appsettings.Development.json
