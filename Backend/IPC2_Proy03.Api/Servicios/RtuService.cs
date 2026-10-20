@@ -72,6 +72,8 @@ namespace IPC2_Proy03.Api.Servicios
             int actualizados = 0;
             int invalidos = 0;
 
+
+
             //revisamos uno por uno los contribuyentes recibidos 
             foreach (Contribuyente recibido in contribuyentesRecibidos)
             {
