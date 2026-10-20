@@ -1,6 +1,6 @@
 @IPC2_Proy03.Api_HostAddress = http://localhost:5280
 
-GET {{IPC2_Proy03.Api_HostAddress}}/weatherforecast/
+GET {{IPC2_Proy03.Api_HostAddress}}/api/estado
 Accept: application/json
 
 ###

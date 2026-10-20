@@ -1,4 +1,4 @@
-﻿namespace IPC2_Proy03.Api.Models
+﻿namespace IPC2_Proy03.Api.Modelos
 {
 
     // esta clase representa a un contribuyente registrado en el RTU

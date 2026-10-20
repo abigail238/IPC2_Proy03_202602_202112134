@@ -1,12 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace IPC2_Proy03.Api.Controllers
+namespace IPC2_Proy03.Api.Controladores
 {
     //indicar que esta clase funcionara como un controlador API
     [ApiController]
 
     //indicar la ruta de acceso a este controlador 
-    [Route("api/[controller]")]
+    [Route("api/estado")]
     public class EstadoController : ControllerBase
     {
         //indicar que este metodo respondera a una solicitud HTTP 

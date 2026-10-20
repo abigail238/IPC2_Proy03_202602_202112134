@@ -1,14 +1,13 @@
-﻿using IPC2_Proy03.Api.Interfaces;
-using IPC2_Proy03.Api.Services;
+﻿using IPC2_Proy03.Api.Servicios;
 
 
-builder.Services.AddControllers();
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddControllers();
-builder.Services.AddScoped<INitService, NitService>();
+builder.Services.AddScoped<NitService>();
+builder.Services.AddScoped<RtuService>();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 

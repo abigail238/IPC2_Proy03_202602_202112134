@@ -1,6 +1,7 @@
-﻿namespace IPC2_Proy03.Api.Interfaces
+﻿
+namespace IPC2_Proy03.Api.Servicios
 {
-    public class NitService : INitService
+    public class NitService
     {
         public bool EsNitValido(string nit)
         {
