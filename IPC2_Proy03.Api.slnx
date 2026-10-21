@@ -1,3 +1,8 @@
 <Solution>
-  <Project Path="Backend/IPC2_Proy03.Api/IPC2_Proy03.Api.csproj" />
+  <Folder Name="/Backend/">
+    <Project Path="Backend/IPC2_Proy03.Api/IPC2_Proy03.Api.csproj" />
+  </Folder>
+  <Folder Name="/Frontend/">
+    <File Path="Frontend/README.md" />
+  </Folder>
 </Solution>
