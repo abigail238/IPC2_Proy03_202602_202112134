@@ -36,7 +36,7 @@ public class RtuController : ControllerBase
         Console.WriteLine("Estamos dentro del metodo post");
 
         //verificamos que realmente se haya enviado informacion 
-        if(contribuyentes == null || contribuyentes.Count  == 0)
+        if(contribuyentes == null || contribuyentes.Count == 0 || contribuyentes.Any(c => c is null))
         {
             return BadRequest(new { mensaje = "No se recibieron contribuyentes para procesar" });
         }

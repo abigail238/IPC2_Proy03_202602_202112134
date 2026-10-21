@@ -8,6 +8,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddScoped<NitService>();
 builder.Services.AddScoped<RtuService>();
+builder.Services.AddScoped<AutorizacionService>();
+builder.Services.AddScoped<ConsultaService>();
+builder.Services.AddScoped<ReporteService>();
+builder.Services.AddScoped<SistemaService>();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 

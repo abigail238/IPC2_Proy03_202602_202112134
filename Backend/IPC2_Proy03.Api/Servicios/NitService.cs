@@ -3,7 +3,9 @@ namespace IPC2_Proy03.Api.Servicios
 {
     public class NitService
     {
-        public bool EsNitValido(string nit)
+        public static string Normalizar(string? nit) => nit?.Trim().ToUpperInvariant() ?? string.Empty;
+
+        public bool EsNitValido(string? nit)
         {
             //validamos que realmente venga un valor 
 
@@ -16,7 +18,7 @@ namespace IPC2_Proy03.Api.Servicios
             }
 
             //eliminamos espacio al incio y al final
-            nit = nit.Trim();
+            nit = Normalizar(nit);
 
 
             //Debe contener al menos un numero y el digito verificador. 

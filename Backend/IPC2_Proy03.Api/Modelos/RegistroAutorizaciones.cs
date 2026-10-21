@@ -19,7 +19,7 @@ public class RegistroAutorizaciones
 
     //fecha extraida de Tiempo 
 
-    public DateTime Fecha { get; set; }
+    public DateTime? Fecha { get; set; }
 
 
     // solo tendra valor caundo la factura haya sido aprobada

@@ -85,13 +85,14 @@ namespace IPC2_Proy03.Api.Servicios
 
 
                 }
+                recibido.Nit = NitService.Normalizar(recibido.Nit);
                 //buscamos si ya existe el contribuyente en la lista de almacenados
 
                 Contribuyente? existente = null;
 
                 foreach (Contribuyente guardado in contribuyentesAlmacenados)
                 {
-                    if (guardado.Nit == recibido.Nit)
+                    if (NitService.Normalizar(guardado.Nit) == recibido.Nit)
                     {
                         existente = guardado;
                         break;
