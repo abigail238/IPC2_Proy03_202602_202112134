@@ -5,6 +5,10 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
   <ItemGroup>
+    <Content Include="..\..\Documentacion\*.pdf;..\..\Documentacion\*.png"
+             Link="Documentacion\%(Filename)%(Extension)"
+             CopyToOutputDirectory="PreserveNewest"
+             CopyToPublishDirectory="PreserveNewest" />
     <Compile Update="Pages\**\*.cshtml.cs">
       <DependentUpon>%(Filename)</DependentUpon>
     </Compile>

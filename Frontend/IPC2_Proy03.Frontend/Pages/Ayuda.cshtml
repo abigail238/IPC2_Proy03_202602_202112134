@@ -9,7 +9,12 @@
 
     <h2>Ayuda</h2>
 
-    <div class="card mt-4">
+    <nav class="nav mb-3" aria-label="Opciones de ayuda">
+        <a class="nav-link" href="#estudiante">Información del estudiante</a>
+        <a class="nav-link" href="#documentacion">Documentación del programa</a>
+    </nav>
+
+    <div class="card mt-4" id="estudiante">
 
         <div class="card-header">
             Información del estudiante
@@ -67,4 +72,30 @@
 
     </div>
 
+    <section class="card mt-4" id="documentacion" aria-labelledby="tituloDocumentacion">
+        <div class="card-header" id="tituloDocumentacion">Documentación del programa</div>
+        <div class="card-body">
+            <p>Consulta el ensayo y los diagramas del proyecto.</p>
+            <a class="btn btn-primary" asp-page="/Ayuda" asp-page-handler="Documento"
+               asp-route-archivo="Ensayo-IPC2-Py03.docx.pdf" target="_blank" rel="noopener">
+                Abrir ensayo PDF
+            </a>
+            <h3 class="h5 mt-4">Diagramas</h3>
+            <div class="row">
+                @foreach (var documento in AyudaModel.Documentos.Where(d => d.Key.EndsWith(".png")))
+                {
+                    <div class="col-md-6 mb-4">
+                        <figure>
+                            <a asp-page="/Ayuda" asp-page-handler="Documento" asp-route-archivo="@documento.Key"
+                               target="_blank" rel="noopener">
+                                <img src="@Url.Page("/Ayuda", "Documento", new { archivo = documento.Key })"
+                                     alt="@documento.Value" class="img-fluid border rounded" loading="lazy" />
+                            </a>
+                            <figcaption class="mt-2">@documento.Value</figcaption>
+                        </figure>
+                    </div>
+                }
+            </div>
+        </div>
+    </section>
 </div>
