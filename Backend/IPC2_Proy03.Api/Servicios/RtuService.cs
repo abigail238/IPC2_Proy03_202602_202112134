@@ -5,28 +5,28 @@ namespace IPC2_Proy03.Api.Servicios
 {
     public class RtuService
     {
-        //este servicio se encarga de admiistrar los contribuyentes 
+        //este servicio se encarga de admiistrar los contribuyentes
         //registrados en el RTU
 
         private readonly NitService _nitService;
 
-            //ruta donde gardaremos los contribuyentes 
+            //ruta donde gardaremos los contribuyentes
 
             private readonly string _rutaArchivo;
 
             public RtuService(NitService nitService, IWebHostEnvironment environment)
         {
 
-            //guardaremos el servicio de Nit para poder validar cada contribuytente recibido 
+            //guardaremos el servicio de Nit para poder validar cada contribuytente recibido
             _nitService = nitService;
 
 
-            //creamos la ruta 
+            //creamos la ruta
             // proyecto/Datos/Contribuyentes.json
 
             _rutaArchivo = Path.Combine(environment.ContentRootPath, "Datos", "Contribuyentes.json");
 
-            //si la carpeta no existe, la creamos 
+            //si la carpeta no existe, la creamos
             string? carpeta = Path.GetDirectoryName(_rutaArchivo);
 
             if (!string.IsNullOrEmpty(carpeta))
@@ -34,7 +34,7 @@ namespace IPC2_Proy03.Api.Servicios
                 Directory.CreateDirectory(carpeta);
             }
 
-            //si el archivo todavia no existe, lo inciamos con la lista vacia 
+            //si el archivo todavia no existe, lo inciamos con la lista vacia
 
             if (!File.Exists(_rutaArchivo))
             {
@@ -53,7 +53,7 @@ namespace IPC2_Proy03.Api.Servicios
         }
 
 
-        //guardar nuevamente todos los contribuyentes 
+        //guardar nuevamente todos los contribuyentes
         private void GuardarContribuyentes(List<Contribuyente> contribuyentes)
         {
             JsonSerializerOptions opciones = new JsonSerializerOptions { WriteIndented = true };
@@ -61,70 +61,73 @@ namespace IPC2_Proy03.Api.Servicios
             File.WriteAllText(_rutaArchivo, json);
         }
 
-        //procesa el arreglo de contribuyentes 
+        //procesa el arreglo de contribuyentes
         //recibido desde la APP
         public ResultadosRtu ProcesarRtu(List<Contribuyente> contribuyentesRecibidos)
         {
-            //cargamos los que existen
-            List<Contribuyente> contribuyentesAlmacenados = ObtenerContribuyentes();
+        lock (SistemaService.BloqueoDatos)
+        {
+                //cargamos los que existen
+                List<Contribuyente> contribuyentesAlmacenados = ObtenerContribuyentes();
 
-            int nuevos = 0;
-            int actualizados = 0;
-            int invalidos = 0;
-
-
-
-            //revisamos uno por uno los contribuyentes recibidos 
-            foreach (Contribuyente recibido in contribuyentesRecibidos)
-            {
-                //primero validamos el NPT del contribuyente recibido
-                if (!_nitService.EsNitValido(recibido.Nit)) {
-
-                    invalidos++;
-                    continue;
+                int nuevos = 0;
+                int actualizados = 0;
+                int invalidos = 0;
 
 
-                }
-                recibido.Nit = NitService.Normalizar(recibido.Nit);
-                //buscamos si ya existe el contribuyente en la lista de almacenados
 
-                Contribuyente? existente = null;
-
-                foreach (Contribuyente guardado in contribuyentesAlmacenados)
+                //revisamos uno por uno los contribuyentes recibidos
+                foreach (Contribuyente recibido in contribuyentesRecibidos)
                 {
-                    if (NitService.Normalizar(guardado.Nit) == recibido.Nit)
+                    //primero validamos el NPT del contribuyente recibido
+                    if (!_nitService.EsNitValido(recibido.Nit)) {
+
+                        invalidos++;
+                        continue;
+
+
+                    }
+                    recibido.Nit = NitService.Normalizar(recibido.Nit);
+                    //buscamos si ya existe el contribuyente en la lista de almacenados
+
+                    Contribuyente? existente = null;
+
+                    foreach (Contribuyente guardado in contribuyentesAlmacenados)
                     {
-                        existente = guardado;
-                        break;
+                        if (NitService.Normalizar(guardado.Nit) == recibido.Nit)
+                        {
+                            existente = guardado;
+                            break;
+                        }
+                    }
+
+                    //si existe, actualizamos su nombre
+                    if (existente == null)
+                    {
+                        contribuyentesAlmacenados.Add(recibido);
+
+                        nuevos++;
+                    }
+                    else
+                    {
+                        //si ya existe, actualizamos su nombre
+                        existente.Nombre = recibido.Nombre;
+                        actualizados++;
                     }
                 }
 
-                //si existe, actualizamos su nombre
-                if (existente == null)
+                //guardamos el estado final de RTU
+                GuardarContribuyentes(contribuyentesAlmacenados);
+
+                //regresmos exactamente los contadores
+                //esperados por el cliente de la APP
+                return new ResultadosRtu
                 {
-                    contribuyentesAlmacenados.Add(recibido);
-
-                    nuevos++;
-                }
-                else
-                {
-                    //si ya existe, actualizamos su nombre
-                    existente.Nombre = recibido.Nombre;
-                    actualizados++;
-                }
-            }
-
-            //guardamos el estado final de RTU
-            GuardarContribuyentes(contribuyentesAlmacenados);
-
-            //regresmos exactamente los contadores
-            //esperados por el cliente de la APP
-            return new ResultadosRtu
-            {
-                CONTRIBUYENTES_NUEVOS = nuevos,
-                CONTRIBUYENTES_ACTUALIZADOS = actualizados,
-                NITS_INVALIDOS = invalidos
-            };
+                    CONTRIBUYENTES_NUEVOS = nuevos,
+                    CONTRIBUYENTES_ACTUALIZADOS = actualizados,
+                    NITS_INVALIDOS = invalidos
+                };
         }
+    }
     }
 }

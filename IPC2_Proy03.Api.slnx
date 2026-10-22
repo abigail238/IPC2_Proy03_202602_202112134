@@ -3,6 +3,6 @@
     <Project Path="Backend/IPC2_Proy03.Api/IPC2_Proy03.Api.csproj" />
   </Folder>
   <Folder Name="/Frontend/">
-    <File Path="Frontend/README.md" />
+    <Project Path="Frontend/IPC2_Proy03.Frontend/IPC2_Proy03.Frontend.csproj" />
   </Folder>
 </Solution>

@@ -23,7 +23,7 @@ namespace IPC2_Proy03.Api.Servicios
 
             //Debe contener al menos un numero y el digito verificador. 
 
-            if (nit.Length < 2)
+            if (nit.Length < 2 || nit.Length > 21)
             {
                 return false;
             }

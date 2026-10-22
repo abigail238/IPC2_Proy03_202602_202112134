@@ -37,12 +37,15 @@ public class ReporteService
     // Lee todas las solicitudes que ya fueron procesadas.
     private List<RegistroAutorizaciones> CargarRegistros()
     {
-        string json =
-            File.ReadAllText(_rutaAutorizaciones);
+        lock (SistemaService.BloqueoDatos)
+        {
+            string json =
+                File.ReadAllText(_rutaAutorizaciones);
 
-        return JsonSerializer
-                   .Deserialize<List<RegistroAutorizaciones>>(json)
-               ?? [];
+            return JsonSerializer
+                       .Deserialize<List<RegistroAutorizaciones>>(json)
+                   ?? [];
+        }
     }
 
     // Genera el reporte para un rango de fechas.

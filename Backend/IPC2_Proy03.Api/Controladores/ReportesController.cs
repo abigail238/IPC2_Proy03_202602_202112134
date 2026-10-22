@@ -8,29 +8,28 @@ namespace IPC2_Proy03.Api.Controladores;
 [Route("api/reportes")]
 public class ReportesController : ControllerBase
 {
-    private readonly ReporteService _servicio;
+    private readonly ReporteService _reporteService;
+    private readonly PdfService _pdfService;
 
-    // ASP.NET Core inyecta automáticamente
-    // el ReporteService registrado en Program.cs.
+
     public ReportesController(
-        ReporteService servicio)
+        ReporteService reporteService,
+        PdfService pdfService)
     {
-        _servicio = servicio;
+        _reporteService = reporteService;
+        _pdfService = pdfService;
     }
 
-    // Endpoint:
-    //
-    // GET /api/reportes
-    //
-    // Ejemplo:
-    //
-    // /api/reportes?fechaInicio=2026-10-01&fechaFin=2026-10-31
+
+    // ---------------------------------------------------------
+    // REPORTE JSON
+    // ---------------------------------------------------------
+
     [HttpGet]
     public IActionResult ObtenerReporte(
         [FromQuery] DateTime fechaInicio,
         [FromQuery] DateTime fechaFin)
     {
-        // Validamos que el rango sea correcto.
         if (fechaInicio.Date > fechaFin.Date)
         {
             return BadRequest(new
@@ -40,12 +39,63 @@ public class ReportesController : ControllerBase
             });
         }
 
+
         List<ReporteFecha> resultado =
-            _servicio.GenerarReporte(
+            _reporteService.GenerarReporte(
                 fechaInicio,
                 fechaFin
             );
 
+
         return Ok(resultado);
+    }
+
+
+    // ---------------------------------------------------------
+    // REPORTE PDF
+    // ---------------------------------------------------------
+    //
+    // GET /api/reportes/pdf
+    // ?fechaInicio=2026-10-01
+    // &fechaFin=2026-10-31
+
+    [HttpGet("pdf")]
+    public IActionResult GenerarPdf(
+        [FromQuery] DateTime fechaInicio,
+        [FromQuery] DateTime fechaFin)
+    {
+        if (fechaInicio.Date > fechaFin.Date)
+        {
+            return BadRequest(
+                "La fecha inicial no puede ser mayor que la fecha final."
+            );
+        }
+
+
+        List<ReporteFecha> reportes =
+            _reporteService.GenerarReporte(
+                fechaInicio,
+                fechaFin
+            );
+
+
+        byte[] pdf =
+            _pdfService.GenerarReporte(
+                reportes,
+                fechaInicio,
+                fechaFin
+            );
+
+
+        string nombreArchivo =
+            $"Reporte_{fechaInicio:yyyyMMdd}_{fechaFin:yyyyMMdd}.pdf";
+
+
+        // Retornamos un archivo PDF al cliente.
+        return File(
+            pdf,
+            "application/pdf",
+            nombreArchivo
+        );
     }
 }

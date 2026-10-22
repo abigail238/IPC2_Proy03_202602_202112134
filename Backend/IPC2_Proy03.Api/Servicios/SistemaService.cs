@@ -4,6 +4,8 @@
 // a su estado inicial.
 public class SistemaService
 {
+    // Evita escrituras y correlativos simultáneos entre solicitudes.
+    internal static readonly object BloqueoDatos = new();
     private readonly string _rutaContribuyentes;
     private readonly string _rutaAutorizaciones;
 
@@ -39,14 +41,17 @@ public class SistemaService
     // dejando nuevamente listas JSON vacías.
     public void Inicializar()
     {
-        File.WriteAllText(
-            _rutaContribuyentes,
-            "[]"
-        );
+        lock (SistemaService.BloqueoDatos)
+        {
+            File.WriteAllText(
+                _rutaContribuyentes,
+                "[]"
+            );
 
-        File.WriteAllText(
-            _rutaAutorizaciones,
-            "[]"
-        );
+            File.WriteAllText(
+                _rutaAutorizaciones,
+                "[]"
+            );
+        }
     }
 }

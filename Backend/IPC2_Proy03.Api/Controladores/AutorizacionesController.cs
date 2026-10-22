@@ -8,9 +8,9 @@ namespace IPC2_Proy03.Api.Controladores;
 [Route("api/autorizaciones")]
 public class AutorizacionesController : ControllerBase
 {
-    private readonly AutorizacionService _servicio;
+    private readonly AutorizacionesService _servicio;
 
-    public AutorizacionesController(AutorizacionService servicio)
+    public AutorizacionesController(AutorizacionesService servicio)
     {
         _servicio = servicio;
     }

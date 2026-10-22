@@ -1,0 +1,70 @@
+﻿@page
+@model IPC2_Proy03.Frontend.Pages.AyudaModel
+
+@{
+    ViewData["Title"] = "Ayuda";
+}
+
+<div class="container mt-4">
+
+    <h2>Ayuda</h2>
+
+    <div class="card mt-4">
+
+        <div class="card-header">
+            Información del estudiante
+        </div>
+
+        <div class="card-body">
+
+            <p>
+                <strong>Nombre:</strong>
+                @Model.NombreEstudiante
+            </p>
+
+            <p>
+                <strong>Carné:</strong>
+                @Model.Carnet
+            </p>
+
+            <p>
+                <strong>Curso:</strong>
+                @Model.Curso
+            </p>
+
+            <p>
+                <strong>Proyecto:</strong>
+                @Model.Proyecto
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="card mt-4">
+
+        <div class="card-header">
+            Funcionamiento del sistema
+        </div>
+
+        <div class="card-body">
+
+            <p>
+                El sistema permite enviar archivos JSON
+                para actualizar el RTU y solicitar
+                autorizaciones de documentos tributarios.
+            </p>
+
+            <p>
+                También permite consultar facturas,
+                visualizar resúmenes de IVA,
+                obtener estadísticas por rango de fechas
+                e inicializar los datos almacenados.
+            </p>
+
+        </div>
+
+    </div>
+
+</div>

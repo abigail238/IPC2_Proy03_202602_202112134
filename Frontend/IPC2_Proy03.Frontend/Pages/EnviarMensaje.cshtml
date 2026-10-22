@@ -1,0 +1,109 @@
+@page
+@model IPC2_Proy03.Frontend.Pages.EnviarMensajeModel
+
+@{
+    ViewData["Title"] = "Enviar mensaje";
+}
+
+
+<div class="container mt-4">
+
+    <h2 class="mb-3">
+        Enviar mensaje
+    </h2>
+
+
+    <p class="text-muted">
+        Seleccione un archivo JSON para actualizar
+        el RTU o procesar solicitudes de autorización.
+    </p>
+
+
+    <form method="post"
+          enctype="multipart/form-data">
+
+
+        <!-- TIPO DE MENSAJE -->
+
+        <div class="mb-3">
+
+            <label class="form-label">
+                Tipo de mensaje
+            </label>
+
+
+            <select asp-for="TipoMensaje"
+                    class="form-select">
+
+                <option value="RTU">
+                    Actualización de RTU
+                </option>
+
+                <option value="AUTORIZACIONES">
+                    Solicitudes de autorización
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <!-- ARCHIVO -->
+
+        <div class="mb-3">
+
+            <label class="form-label">
+                Archivo JSON
+            </label>
+
+
+            <input asp-for="ArchivoJson"
+                   type="file"
+                   accept=".json"
+                   class="form-control" />
+
+        </div>
+
+
+        <!-- BOTÓN -->
+
+        <button type="submit"
+                class="btn btn-primary">
+
+            Enviar archivo
+
+        </button>
+
+    </form>
+
+
+    <!-- ERROR -->
+
+    @if (!string.IsNullOrWhiteSpace(Model.Error))
+    {
+        <div class="alert alert-danger mt-4">
+
+            <strong>Error</strong>
+
+            <pre class="mt-2">@Model.Error</pre>
+
+        </div>
+    }
+
+
+    <!-- RESULTADO -->
+
+    @if (!string.IsNullOrWhiteSpace(Model.Resultado))
+    {
+        <div class="alert alert-success mt-4">
+
+            <h5>
+                Respuesta del servicio
+            </h5>
+
+            <pre>@Model.Resultado</pre>
+
+        </div>
+    }
+
+</div>

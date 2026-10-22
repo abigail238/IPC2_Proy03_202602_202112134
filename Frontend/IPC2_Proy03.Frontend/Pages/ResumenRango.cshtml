@@ -1,0 +1,189 @@
+﻿@page
+@model IPC2_Proy03.Frontend.Pages.ResumenRangoModel
+@using System.Text.Json
+
+@{
+    ViewData["Title"] = "Resumen por rango";
+}
+
+<div class="container mt-4">
+
+    <h2>Resumen por rango de fechas</h2>
+
+    <form method="post">
+
+        <div class="row">
+
+            <div class="col-md-6 mb-3">
+
+                <label class="form-label">
+                    Fecha inicial
+                </label>
+
+                <input asp-for="FechaInicio"
+                       type="date"
+                       class="form-control" />
+
+            </div>
+
+            <div class="col-md-6 mb-3">
+
+                <label class="form-label">
+                    Fecha final
+                </label>
+
+                <input asp-for="FechaFin"
+                       type="date"
+                       class="form-control" />
+
+            </div>
+
+        </div>
+
+        <div class="form-check mb-3">
+
+            <input asp-for="IncluirIva"
+                   class="form-check-input" />
+
+            <label asp-for="IncluirIva"
+                   class="form-check-label">
+
+                Mostrar valores incluyendo IVA
+
+            </label>
+
+        </div>
+
+        <button type="submit"
+                class="btn btn-primary">
+            Consultar
+        </button>
+
+    </form>
+
+
+    @if (!string.IsNullOrWhiteSpace(Model.Error))
+    {
+        <div class="alert alert-danger mt-4">
+            @Model.Error
+        </div>
+    }
+
+
+    @if (Model.Resultado.Count > 0)
+    {
+        <hr />
+
+        <table class="table table-bordered table-striped">
+
+            <thead>
+
+                <tr>
+                    <th>Fecha</th>
+                    <th>Valor autorizado</th>
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                @foreach (var item in Model.Resultado)
+                {
+                    <tr>
+
+                        <td>
+                            @item.Fecha.ToString("dd/MM/yyyy")
+                        </td>
+
+                        <td>
+                            Q @item.ValorAutorizado.ToString("N2")
+                        </td>
+
+                    </tr>
+                }
+
+            </tbody>
+
+        </table>
+
+
+        <div class="mt-5">
+
+            <h4>
+                Gráfica de valores autorizados
+            </h4>
+
+            <canvas id="graficaRango"></canvas>
+
+        </div>
+
+
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+        <script>
+
+            // Fechas que aparecerán en el eje X.
+            const fechas =
+                @Html.Raw(
+                    JsonSerializer.Serialize(
+                        Model.Resultado.Select(
+                            x => x.Fecha.ToString("dd/MM/yyyy")
+                        )
+                    )
+                );
+
+
+            // Valores que aparecerán en el eje Y.
+            const valores =
+                @Html.Raw(
+                    JsonSerializer.Serialize(
+                        Model.Resultado.Select(
+                            x => x.ValorAutorizado
+                        )
+                    )
+                );
+
+
+            const canvas =
+                document.getElementById(
+                    'graficaRango'
+                );
+
+
+            new Chart(canvas, {
+
+                type: 'line',
+
+                data: {
+
+                    labels: fechas,
+
+                    datasets: [
+                        {
+                            label: 'Valor autorizado',
+                            data: valores,
+                            tension: 0.2
+                        }
+                    ]
+                },
+
+                options: {
+
+                    responsive: true,
+
+                    scales: {
+
+                        y: {
+                            beginAtZero: true
+                        }
+
+                    }
+                }
+
+            });
+
+        </script>
+    }
+
+</div>

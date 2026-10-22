@@ -41,12 +41,15 @@ public class ConsultaService
 
     private List<RegistroAutorizaciones> CargarRegistros()
     {
-        string json =
-            File.ReadAllText(_rutaAutorizaciones);
+        lock (SistemaService.BloqueoDatos)
+        {
+            string json =
+                File.ReadAllText(_rutaAutorizaciones);
 
-        return JsonSerializer
-                   .Deserialize<List<RegistroAutorizaciones>>(json)
-               ?? [];
+            return JsonSerializer
+                       .Deserialize<List<RegistroAutorizaciones>>(json)
+                   ?? [];
+        }
     }
 
 
@@ -62,7 +65,8 @@ public class ConsultaService
     {
         // Normalizamos el tipo para evitar problemas
         // con mayúsculas/minúsculas.
-        tipo = tipo.Trim().ToLower();
+        tipo = tipo.Trim().ToLowerInvariant();
+        nit = NitService.Normalizar(nit);
 
         List<RegistroAutorizaciones> registros =
             CargarRegistros();
@@ -82,7 +86,7 @@ public class ConsultaService
         if (tipo == "emitidas")
         {
             consulta = consulta.Where(
-                r => r.NitEmisor == nit
+                r => NitService.Normalizar(r.NitEmisor) == nit
             );
         }
         // Si solicita "recibidas",
@@ -90,7 +94,7 @@ public class ConsultaService
         else if (tipo == "recibidas")
         {
             consulta = consulta.Where(
-                r => r.NitReceptor == nit
+                r => NitService.Normalizar(r.NitReceptor) == nit
             );
         }
         else

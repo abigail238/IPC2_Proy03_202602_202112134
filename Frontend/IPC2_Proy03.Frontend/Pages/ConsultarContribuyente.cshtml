@@ -1,0 +1,54 @@
+@page
+@model IPC2_Proy03.Frontend.Pages.ConsultarContribuyenteModel
+@{
+    ViewData["Title"] = "Consultar contribuyente";
+}
+<div class="container mt-4">
+    <h2>Consultar contribuyente</h2>
+    <form method="post">
+        <div class="mb-3">
+            <label asp-for="Nit" class="form-label">NIT</label>
+            <input asp-for="Nit" class="form-control" required />
+        </div>
+        <div class="mb-3">
+            <label asp-for="Tipo" class="form-label">Facturas</label>
+            <select asp-for="Tipo" class="form-select">
+                <option value="emitidas">Emitidas</option>
+                <option value="recibidas">Recibidas</option>
+            </select>
+        </div>
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label asp-for="FechaInicio" class="form-label">Fecha inicial</label>
+                <input asp-for="FechaInicio" type="date" class="form-control" />
+            </div>
+            <div class="col-md-6 mb-3">
+                <label asp-for="FechaFin" class="form-label">Fecha final</label>
+                <input asp-for="FechaFin" type="date" class="form-control" />
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Consultar</button>
+    </form>
+    @if (!string.IsNullOrWhiteSpace(Model.Error))
+    {
+        <div class="alert alert-danger mt-4">@Model.Error</div>
+    }
+    @if (Model.Resultado is not null)
+    {
+        <h4 class="mt-4">Facturas @Model.Resultado.Tipo del NIT @Model.Resultado.Nit</h4>
+        <table class="table table-bordered table-striped">
+            <thead><tr><th>Fecha</th><th>Facturas autorizadas</th><th>Monto total</th></tr></thead>
+            <tbody>
+                @foreach (var item in Model.Resultado.Detalle)
+                {
+                    <tr><td>@item.Fecha.ToString("dd/MM/yyyy")</td><td>@item.CantidadFacturas</td><td>Q @item.MontoTotal.ToString("N2")</td></tr>
+                }
+            </tbody>
+        </table>
+        <p><strong>Total facturado: Q @Model.Resultado.TotalFacturado.ToString("N2")</strong></p>
+        @if (Model.Resultado.Detalle.Count == 0)
+        {
+            <p>No hay facturas autorizadas en el rango seleccionado.</p>
+        }
+    }
+</div>

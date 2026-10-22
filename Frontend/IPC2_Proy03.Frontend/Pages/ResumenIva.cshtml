@@ -1,0 +1,174 @@
+﻿@page
+@model IPC2_Proy03.Frontend.Pages.ResumenIvaModel
+@using System.Text.Json
+
+@{
+    ViewData["Title"] = "Resumen de IVA";
+}
+
+<div class="container mt-4">
+
+    <h2>Resumen de IVA por fecha y NIT</h2>
+
+    <form method="post">
+
+        <div class="mb-3">
+
+            <label class="form-label">
+                Fecha
+            </label>
+
+            <input asp-for="Fecha"
+                   type="date"
+                   class="form-control" />
+
+        </div>
+
+        <button type="submit"
+                class="btn btn-primary">
+            Consultar
+        </button>
+
+    </form>
+
+    @if (!string.IsNullOrWhiteSpace(Model.Error))
+    {
+        <div class="alert alert-danger mt-4">
+            @Model.Error
+        </div>
+    }
+
+    @if (Model.Resultado.Count > 0)
+    {
+        <hr />
+
+        <h4>Resultados</h4>
+
+        <table class="table table-bordered table-striped">
+
+            <thead>
+                <tr>
+                    <th>NIT</th>
+                    <th>IVA emitido</th>
+                    <th>IVA recibido</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                @foreach (var item in Model.Resultado)
+                {
+                    <tr>
+
+                        <td>
+                            @item.Nit
+                        </td>
+
+                        <td>
+                            Q @item.IvaEmitido.ToString("N2")
+                        </td>
+
+                        <td>
+                            Q @item.IvaRecibido.ToString("N2")
+                        </td>
+
+                    </tr>
+                }
+
+            </tbody>
+
+        </table>
+
+
+        <!--
+            Este canvas será utilizado por Chart.js
+            para dibujar la gráfica.
+        -->
+
+        <div class="mt-5">
+
+            <h4>Gráfica de IVA</h4>
+
+            <canvas id="graficaIva"></canvas>
+
+        </div>
+
+
+        <!-- Chart.js -->
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+        <script>
+
+            // Convertimos la información proveniente
+            // de C# en arreglos JavaScript.
+
+            const etiquetas =
+                @Html.Raw(
+                    JsonSerializer.Serialize(
+                        Model.Resultado.Select(x => x.Nit)
+                    )
+                );
+
+            const ivaEmitido =
+                @Html.Raw(
+                    JsonSerializer.Serialize(
+                        Model.Resultado.Select(x => x.IvaEmitido)
+                    )
+                );
+
+            const ivaRecibido =
+                @Html.Raw(
+                    JsonSerializer.Serialize(
+                        Model.Resultado.Select(x => x.IvaRecibido)
+                    )
+                );
+
+
+            // Buscamos el canvas de la página.
+            const canvas =
+                document.getElementById('graficaIva');
+
+
+            // Creamos la gráfica.
+            new Chart(canvas, {
+
+                type: 'bar',
+
+                data: {
+
+                    labels: etiquetas,
+
+                    datasets: [
+
+                        {
+                            label: 'IVA emitido',
+                            data: ivaEmitido
+                        },
+
+                        {
+                            label: 'IVA recibido',
+                            data: ivaRecibido
+                        }
+
+                    ]
+                },
+
+                options: {
+
+                    responsive: true,
+
+                    scales: {
+
+                        y: {
+                            beginAtZero: true
+                        }
+
+                    }
+                }
+
+            });
+
+        </script>
+    }
+
+</div>
